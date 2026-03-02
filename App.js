@@ -1,56 +1,39 @@
-const generateBtn = document.getElementById("generateBtn");
-const numbersInput = document.getElementById("numbers");
-const messageInput = document.getElementById("message");
-const linksDiv = document.getElementById("links");
-const sentBox = document.getElementById("sentBox");
-const counter = document.getElementById("counter");
+ document.getElementById("generateBtn").addEventListener("click", function () {
 
-let sentCount = 0;
-let sentNumbers = [];
+  const numbersInput = document.getElementById("numbers").value.trim();
+  const message = document.getElementById("Message").value.trim();
+  const linksDiv = document.getElementById("links");
 
-generateBtn.addEventListener("click", function() {
+  linksDiv.innerHTML = ""; // clear old links
 
-  linksDiv.innerHTML = "";
+  if (!numbersInput || !message) {
+    alert("Please enter numbers and message");
+    return;
+  }
 
-  const numbers = numbersInput.value.split("\n");
-  const message = encodeURIComponent(messageInput.value);
+  const numbers = numbersInput.split("\n");
 
-  numbers.forEach(function(num) {
+  numbers.forEach(function (number) {
 
-    num = num.trim();
-    if (num === "") return;
+    number = number.trim();
 
-    const button = document.createElement("button");
-    button.textContent = "Send to " + num;
+    if (number !== "") {
 
-    button.addEventListener("click", function() {
+      const cleanNumber = number.replace(/\D/g, "");
 
-      if (sentNumbers.includes(num)) {
-        alert("Already sent to this number!");
-        return;
-      }
+      const encodedMessage = encodeURIComponent(message);
 
-      const link = "https://wa.me/92" + num + "?text=" + message;
-      window.open(link, "_blank");
+      const waLink = "https://wa.me/" + cleanNumber + "?text=" + encodedMessage;
 
-      sentNumbers.push(num);
-      sentCount++;
-      counter.textContent = sentCount;
+      const btn = document.createElement("button");
+      btn.textContent = "Send to " + cleanNumber;
 
-      const sentItem = document.createElement("div");
-      sentItem.textContent = num + " - Sent";
-      sentBox.appendChild(sentItem);
+      btn.onclick = function () {
+        window.open(waLink, "_blank");
+      };
 
-      button.disabled = true;
-
-      if (sentCount >= 50) {
-        alert("Warning! 50 messages sent. Ban risk! Change numbers.");
-      }
-
-    });
-
-    linksDiv.appendChild(button);
-
+      linksDiv.appendChild(btn);
+    }
   });
 
 });
